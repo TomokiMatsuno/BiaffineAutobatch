@@ -1,8 +1,6 @@
 //
 // Created by 松野智紀 on 2017/10/28.
 //
-//#include "headers.h"
-//#include "lib/utils.h"
 #include <sstream>
 #include <string.h>
 using namespace std;
@@ -10,7 +8,6 @@ bool pret_embs;
 
 class UtilDict{
 
-//protected:
 public:
     unordered_map<unsigned, string> i2x;
     unordered_map<string, unsigned> x2i;
@@ -57,7 +54,6 @@ public:
             return;
         } else {
             this->x2i[ent] = this->x2i.size() - 1;
-//            cout << x2i[ent] << "\t" << ent << "\t" << x2i.size() << endl;
             this->i2x[this->x2i[ent]] = ent;
             return;
         }
@@ -132,9 +128,6 @@ public:
 };
 
 class Vocab{
-    const unsigned PAD = 0;
-    const unsigned ROOT = 1;
-    const unsigned UNK = 2;
 
     unsigned _words_in_train;
     vector<UtilDict> dicts;
@@ -188,19 +181,19 @@ public:
         }
         return;
     }
+//Todo: Enable utilizing pretrained embeddings.
+//    Expression get_word_embs(ComputationGraph& cg, unsigned word_dims){
+//        if(pret_embs) return random_normal(cg, {wd.vocab_size(), word_dims});
+//        return dynet::zeroes(cg, {wd.vocab_size(), word_dims});
+//    }
+//
+//    Expression get_tag_embs(ComputationGraph& cg, unsigned tag_dims){
+//        return random_normal(cg, {td.vocab_size(), tag_dims});
+//    }
 
-    Expression get_word_embs(ComputationGraph& cg, unsigned word_dims){
-        if(pret_embs) return random_normal(cg, {wd.vocab_size(), word_dims});
-        return dynet::zeroes(cg, {wd.vocab_size(), word_dims});
-    }
-
-    Expression get_tag_embs(ComputationGraph& cg, unsigned tag_dims){
-        return random_normal(cg, {td.vocab_size(), tag_dims});
-    }
-
-    unsigned words_in_train(){
-        return this->_words_in_train;
-    }
+//    unsigned words_in_train(){
+//        return this->_words_in_train;
+//    }
 };
 
 class DataLoader{

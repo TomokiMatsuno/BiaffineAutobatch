@@ -27,11 +27,6 @@ int main(int argc, char** argv) {
     }
     batches.clear();
     batches.insert(batches.end(), new_batches.begin(), new_batches.end());
-<<<<<<< HEAD
-    new_batches.clear();
-
-=======
->>>>>>> f0eb0e79952b2f256a2429f93ac22ff7207dc2bc
 
 //    showSents(vocab, batches);
 
@@ -60,13 +55,7 @@ int main(int argc, char** argv) {
                     seq_pos.push_back(batches[i][j][k][1]);
                     seq_head.push_back(batches[i][j][k][2]);
                     seq_rel.push_back(batches[i][j][k][3]);
-                    //cout << vocab.get_dicts()[0].i2x[seq_word[seq_word.size()-1]] << " ";
-                    //cout << seq_head[seq_head.size()-1] << " ";
-                    //cout << vocab.get_dicts()[1].i2x[seq_pos[seq_pos.size()-1]] << " ";
-                    //cout << seq_pos[seq_pos.size()-1] << " ";
-                    //cout << vocab.get_dicts()[1].x2i[vocab.get_dicts()[1].i2x[seq_pos[seq_pos.size()-1]]] << " ";
                 }
-                //cout << endl;
                 parser.l2rbuilder.start_new_sequence();
                 parser.r2lbuilder.start_new_sequence();
                 errs[j] = parser.BuildParser(cg, seq_word, seq_pos, seq_head, seq_rel);

@@ -66,7 +66,7 @@ public:
         if (has_entry(ent)) {
             return;
         } else {
-            this->x2i[ent] = this->x2i.size();
+            this->x2i[ent] = this->x2i.size() - 1;
 //            cout << x2i[ent] << "\t" << ent << "\t" << x2i.size() << endl;
             this->i2x[this->x2i[ent]] = ent;
             return;
@@ -200,7 +200,8 @@ public:
                     tokens.push_back(token_buffer);
                 };
                 //skip illegal sentences
-                if(tokens.empty() || tokens.size() != 10) continue;
+                regex re(R"(\d+)");
+                if(tokens.empty() || tokens.size() != 10 || !regex_match(tokens[0], re) ) continue;
 
                 //add elements into dictionaries
                 add_entry(tokens);

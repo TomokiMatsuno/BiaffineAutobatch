@@ -119,10 +119,10 @@ struct Parser {
         }
         //bilstm_outputs[t]: (LSTM_SIZE x 2)
 
-        R_ArcMLP_head = affine_transform({ArcMLP_head_bias, ArcMLP_head, concatenate(bilstm_outputs, 1)});
+        R_ArcMLP_head = rectify(affine_transform({ArcMLP_head_bias, ArcMLP_head, concatenate(bilstm_outputs, 1)}));
         //R_ArcMLP_head: ArcMLP_SIZE * slen
 
-        R_ArcMLP_dep = affine_transform({ArcMLP_dep_bias, ArcMLP_dep, concatenate(bilstm_outputs, 1)});
+        R_ArcMLP_dep = rectify(affine_transform({ArcMLP_dep_bias, ArcMLP_dep, concatenate(bilstm_outputs, 1)}));
         //R_ArcMLP_dep: ArcMLP_SIZE * slen
 //        cg.forward(R_ArcMLP_dep);
         S_arc = bilinear(cg, R_ArcMLP_dep, U_arc, R_ArcMLP_head, EMBD_SIZE, slen, 1, false, false);

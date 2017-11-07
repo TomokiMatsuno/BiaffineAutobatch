@@ -51,16 +51,6 @@ public:
         return this->dict_idx;
     }
 
-//    void url2token(vector<string> patterns, vector<string> pidx2token){
-//        for(int i = 0; i < patterns.size(); i++) {
-//            regex re(pattern);
-//            if(regex_match(ent, re)){
-//                this->x2i[pidx2token[i]] = this->x2i.size();
-//                this->i2x[this->x2i[ent]] = ent;
-//                return;
-//            }
-//        }
-//    }
 
     void add_entry(string ent) {
         if (has_entry(ent)) {
@@ -83,8 +73,6 @@ public:
         }
     }
 
-
-//    virtual ~UtilDict(){};
 };
 
 class ordinalUtilDict : public UtilDict{
@@ -103,7 +91,6 @@ public:
     }
 
     ordinalUtilDict(unsigned dict_idx) : UtilDict(dict_idx){}
-//    virtual ~ordinalUtilDict();
 
 };
 
@@ -120,7 +107,6 @@ public:
     }
 
     stoiUtilDict(unsigned dict_idx) : UtilDict(dict_idx){}
-//    virtual ~stoiUtilDict();
 
 };
 
@@ -155,14 +141,7 @@ class Vocab{
     char delimiter;
 
 public:
-    UtilDict wd = 1;
-    UtilDict td = 3;
-    UtilDict rd = 7;
-
     void add_entry(vector<string> tokens){
-//        wd.add_entry(tokens[wd.idx()]);
-//        td.add_entry(tokens[td.idx()]);
-//        rd.add_entry(tokens[rd.idx()]);
         for(auto& d : this->dicts){
             d.add_entry(tokens[d.idx()]);
         }
@@ -357,10 +336,7 @@ public:
 
         for(int i = 0; i < this->_buckets.size(); i++){
             unsigned bucket_len = this->_buckets[i].size();
-//            unsigned n_tokens = bucket_len * this->_bucket_sizes[i];
-//            unsigned one = 1;
-////            unsigned n_splits = std::max(n_tokens / batch_size, one);
-//            unsigned n_splits = std::max(bucket_len / batch_size, one);
+
             auto func = &range_func::shuffled;
             if(shuffle){
                 auto func = &range_func::shuffled;
@@ -370,10 +346,6 @@ public:
             }
 
             vector<unsigned> order = func(bucket_len);
-//            vector<vector<unsigned>> split_order = array_split(order, n_splits);
-//            for(auto so : split_order){
-//                batches.push_back(so);
-//            }
 
             batches.push_back(order);
             //batches.push_back(batch);

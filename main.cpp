@@ -24,6 +24,10 @@ int main(int argc, char** argv) {
     stoiUtilDict hd = 6;
     ordinalUtilDict rd = 7;
 
+    hd.i2x.clear(); hd.x2i.clear();
+    for(int i = 0; i < 10000; i++) {
+        hd.add_entry(to_string(i));
+    }
 
     Vocab vocab(train_file, '\t', {wd, td, hd, rd});
     DataLoader dl(train_file, 1, vocab);
@@ -41,7 +45,7 @@ int main(int argc, char** argv) {
     }
     batches.clear();
     batches.insert(batches.end(), new_batches.begin(), new_batches.end());
-
+    new_batches.clear();
 
 
 //    showSents(vocab, batches);
@@ -72,13 +76,20 @@ int main(int argc, char** argv) {
 
 
             for (unsigned j = 0; j < batches[i].size(); j++) {
+                //cout << i << " " << j << endl;
                 vector<unsigned> seq_word, seq_pos, seq_head, seq_rel;
                 for (unsigned k = 0; k < batches[i][j].size(); k++) {
                     seq_word.push_back(batches[i][j][k][0]);
                     seq_pos.push_back(batches[i][j][k][1]);
                     seq_head.push_back(batches[i][j][k][2]);
                     seq_rel.push_back(batches[i][j][k][3]);
+                    //cout << vocab.get_dicts()[0].i2x[seq_word[seq_word.size()-1]] << " ";
+                    //cout << seq_head[seq_head.size()-1] << " ";
+                    //cout << vocab.get_dicts()[1].i2x[seq_pos[seq_pos.size()-1]] << " ";
+                    //cout << seq_pos[seq_pos.size()-1] << " ";
+                    //cout << vocab.get_dicts()[1].x2i[vocab.get_dicts()[1].i2x[seq_pos[seq_pos.size()-1]]] << " ";
                 }
+                //cout << endl;
                 parser.l2rbuilder.start_new_sequence();
                 parser.r2lbuilder.start_new_sequence();
                 errs[j] = parser.BuildParser(cg, seq_word, seq_pos, seq_head, seq_rel);
@@ -101,6 +112,7 @@ int main(int argc, char** argv) {
 //        cg.forward(sum_errs);
             cg.backward(sum_errs);
             sgd.update();
+            //cg.invalidate();
 
             cout << "loss " << loss << endl;
         }

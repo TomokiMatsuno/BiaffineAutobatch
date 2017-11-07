@@ -4,7 +4,7 @@ const unsigned EMBD_SIZE = 100;
 const unsigned LSTM_SIZE = 400;
 const unsigned ArcMLP_SIZE = 500;
 const unsigned LabelMLP_SIZE = 100;
-const unsigned LAYERS = 1;
+const unsigned LAYERS = 3;
 const float pdrop = 0.33;
 
 unsigned wrds_size;

@@ -4,7 +4,7 @@ const unsigned EMBD_SIZE = 100;
 const unsigned LSTM_SIZE = 400;
 const unsigned ArcMLP_SIZE = 500;
 const unsigned LabelMLP_SIZE = 100;
-const unsigned LAYERS = 3;
+const unsigned LAYERS = 1;
 const float pdrop = 0.33;
 
 unsigned wrds_size;
@@ -33,9 +33,9 @@ struct Parser {
     explicit Parser(ParameterCollection& model, Vocab& vocab):
             l2rbuilder(LAYERS, EMBD_SIZE * 2, LSTM_SIZE, model),
             r2lbuilder(LAYERS, EMBD_SIZE * 2, LSTM_SIZE, model){
-        wrds_size = vocab.get_dicts()[0].vocab_size();
-        poss_size = vocab.get_dicts()[1].vocab_size();
-        arcs_size = vocab.get_dicts()[3].vocab_size();
+        wrds_size = vocab.get_dicts()[0].vocab_size() + 1;
+        poss_size = vocab.get_dicts()[1].vocab_size() + 1;
+        arcs_size = vocab.get_dicts()[3].vocab_size() + 1;
 
         lp_w = model.add_lookup_parameters(wrds_size, {EMBD_SIZE});
         lp_p = model.add_lookup_parameters(poss_size, {EMBD_SIZE});
@@ -57,7 +57,7 @@ struct Parser {
 
     }
 
-    Expression& BuildParser(ComputationGraph& cg, vector<unsigned> seq_word, vector<unsigned> seq_pos, vector<unsigned> seq_head, vector<unsigned> seq_rel) {
+    Expression BuildParser(ComputationGraph& cg, vector<unsigned> seq_word, vector<unsigned> seq_pos, vector<unsigned> seq_head, vector<unsigned> seq_rel) {
         const unsigned slen = seq_word.size();
 
 //        l2rbuilder.new_graph(cg);  // reset RNN builder for new graph
@@ -91,7 +91,7 @@ struct Parser {
         Expression U_label = parameter(cg, p_U_label);
         Expression U_arc = parameter(cg, p_U_arc);
 
-        Expression S_arc;
+//        Expression S_arc;
 
 //        Expression bLin;
 
@@ -125,6 +125,7 @@ struct Parser {
         R_ArcMLP_dep = rectify(affine_transform({ArcMLP_dep_bias, ArcMLP_dep, concatenate(bilstm_outputs, 1)}));
         //R_ArcMLP_dep: ArcMLP_SIZE * slen
 //        cg.forward(R_ArcMLP_dep);
+        Expression S_arc;
         S_arc = bilinear(cg, R_ArcMLP_dep, U_arc, R_ArcMLP_head, EMBD_SIZE, slen, 1, false, false);
         //S_arc: slen * slen
 //        cg.forward(S_arc);

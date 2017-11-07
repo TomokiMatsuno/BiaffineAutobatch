@@ -24,7 +24,7 @@ Expression& ones(ComputationGraph& cg,  unsigned vec_len){
     return ones_vec_expr;
 }
 
-Expression& bilinear(ComputationGraph& cg, Expression& x, Expression& W, Expression& y, unsigned input_size, unsigned seq_len, unsigned num_outputs = 1, bool bias_x=false, bool bias_y=false){
+Expression bilinear(ComputationGraph& cg, Expression& x, Expression& W, Expression& y, unsigned input_size, unsigned seq_len, unsigned num_outputs = 1, bool bias_x=false, bool bias_y=false){
     unsigned nx = x.dim().cols();
     unsigned ny = y.dim().cols();
 

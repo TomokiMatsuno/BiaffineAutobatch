@@ -1,20 +1,5 @@
 #include "headers.h"
 
-void showSents(Vocab& vocab, vector<vector<vector<vector<unsigned>>>>& batches){
-    for(int i = 0; i < batches.size(); i++){
-        cout << "batch_" << endl;
-        for(int j = 0; j < batches[i].size(); j++){
-            for(int k = 0; k < batches[i][j].size(); k++){
-                cout << vocab.get_dicts()[0].i2x[batches[i][j][k][0]] << " ";
-//                cout << vocab.get_dicts()[0].x2i[vocab.get_dicts()[0].i2x[batches[i][j][k][0]]] << " ";
-//                cout << vocab.get_dicts()[0].i2x[vocab.get_dicts()[0].x2i[vocab.get_dicts()[0].i2x[batches[i][j][k][0]]]] << " ";
-            }
-            cout << endl;
-            cout << endl;
-        }
-    }
-}
-
 int main(int argc, char** argv) {
     dynet::initialize(argc, argv);
     std::cout << "Hello, World!" << std::endl;
@@ -29,9 +14,6 @@ int main(int argc, char** argv) {
     DataLoader dl(train_file, 1, vocab);
 
     vector<vector<vector<vector<unsigned>>>> batches = dl.get_batches(false);
-//    vector<vector<vector<unsigned>>> sents = dl.get_sents();
-
-//    unsigned batch_size = 5;
 
     vector<vector<vector<vector<unsigned>>>> new_batches(batches[0].size() / batch_size);
     for(int i = 0; i * batch_size < batches[0].size() - batch_size + 1; i++){
@@ -42,22 +24,12 @@ int main(int argc, char** argv) {
     batches.clear();
     batches.insert(batches.end(), new_batches.begin(), new_batches.end());
 
-
-
 //    showSents(vocab, batches);
 
-
-
-
-//    ComputationGraph cg;
     ParameterCollection m;
     SimpleSGDTrainer sgd(m);
     Parser<VanillaLSTMBuilder> parser(m, vocab);
 
-//    parser.l2rbuilder.new_graph(cg);  // reset RNN builder for new graph
-//    parser.r2lbuilder.new_graph(cg);  // reset RNN builder for new graph
-
-//    Parser parser(m);
     for(unsigned e = 0; e < epoc; e++) {
         cerr << "epoc: " << e << endl;
         for (unsigned i = 0; i < batches.size(); i++) {
@@ -85,20 +57,8 @@ int main(int argc, char** argv) {
             }
 
             Expression pred_arc = concatenate(errs);
-
-//            for(int i = 0; i < S_arc.dim().bd; i++) {
-//                Expression s = pick_batch_elem(S_arc, i);
-//                IndexTensor iTnsr = TensorTools::argmax(s.value());
-//                cout << seq_head[i] << "\t" << *(iTnsr.v) << endl;
-//            }
-//            cout << endl;
-
-
-
             Expression sum_errs = sum(errs);
-//        cg.print_graphviz();
             loss += as_scalar(cg.forward(sum_errs));
-//        cg.forward(sum_errs);
             cg.backward(sum_errs);
             sgd.update();
 
@@ -110,3 +70,15 @@ int main(int argc, char** argv) {
     return 0;
 }
 
+void showSents(Vocab& vocab, vector<vector<vector<vector<unsigned>>>>& batches){
+    for(int i = 0; i < batches.size(); i++){
+        cout << "batch_" << endl;
+        for(int j = 0; j < batches[i].size(); j++){
+            for(int k = 0; k < batches[i][j].size(); k++){
+                cout << vocab.get_dicts()[0].i2x[batches[i][j][k][0]] << " ";
+            }
+            cout << endl;
+            cout << endl;
+        }
+    }
+}

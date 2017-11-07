@@ -25,14 +25,14 @@
 #include "dynet/dict.h"
 #include "dynet/expr.h"
 #include "dynet/io.h"
-#include "getpid.h"
+//#include "getpid.h"
 
 using namespace std;
 using namespace dynet;
 
 
-#include "../BiAffine/read-file/read_ud_data.h"
-#include "../BiAffine/read-file/read_ud_data.cpp"
+#include "../../BiAffine/read-file/read_ud_data.h"
+#include "../../BiAffine/read-file/read_ud_data.cpp"
 
 
 #include "config.h"

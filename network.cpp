@@ -45,13 +45,14 @@ struct Parser {
         p_ArcMLP_dep = model.add_parameters({ArcMLP_SIZE, LSTM_SIZE * 2});
         p_ArcMLP_dep_bias = model.add_parameters({ArcMLP_SIZE});
 
-        p_LabelMLP_head = model.add_parameters({LabelMLP_SIZE * arcs_size, LSTM_SIZE * 2});
+        p_LabelMLP_head = model.add_parameters({LabelMLP_SIZE, LSTM_SIZE * 2});
         p_LabelMLP_head_bias = model.add_parameters({LabelMLP_SIZE});
-        p_LabelMLP_dep = model.add_parameters({LabelMLP_SIZE * arcs_size, LSTM_SIZE * 2});
+        p_LabelMLP_dep = model.add_parameters({LabelMLP_SIZE, LSTM_SIZE * 2});
         p_LabelMLP_dep_bias = model.add_parameters({LabelMLP_SIZE});
 
 //        p_U_label = model.add_parameters({LabelMLP_SIZE, LabelMLP_SIZE + 1});
 //        p_U_arc = model.add_parameters({ArcMLP_SIZE, ArcMLP_SIZE + 1});
+//        p_U_label = model.add_parameters({LabelMLP_SIZE * arcs_size, LabelMLP_SIZE});
         p_U_label = model.add_parameters({LabelMLP_SIZE, LabelMLP_SIZE});
         p_U_arc = model.add_parameters({ArcMLP_SIZE, ArcMLP_SIZE});
 
@@ -87,6 +88,7 @@ struct Parser {
         Expression U_arc = parameter(cg, p_U_arc);
 
         Expression S_arc;
+        Expression S_label;
 
         for(unsigned t = 0; t < slen; ++t){
             embds_word[t] = lookup(cg, lp_w, seq_word[t]);
@@ -104,22 +106,36 @@ struct Parser {
             bilstm_outputs[t] = concatenate({fwds[t], bwds[t]});
         }
         //bilstm_outputs[t]: (LSTM_SIZE x 2)
+//        cg.forward(fwds[0]);
+//        cg.forward(bilstm_outputs[0]);
 
         R_ArcMLP_head = rectify(affine_transform({ArcMLP_head_bias, ArcMLP_head, concatenate(bilstm_outputs, 1)}));
         //R_ArcMLP_head: ArcMLP_SIZE * slen
 
         R_ArcMLP_dep = rectify(affine_transform({ArcMLP_dep_bias, ArcMLP_dep, concatenate(bilstm_outputs, 1)}));
         //R_ArcMLP_dep: ArcMLP_SIZE * slen
-
+//        cg.forward(R_ArcMLP_dep);
         S_arc = bilinear(cg, R_ArcMLP_dep, U_arc, R_ArcMLP_head, EMBD_SIZE, slen, 1, false, false);
-
+//        cg.forward(S_arc);
         Dim dim_pick({slen}, slen);
         S_arc = reshape(S_arc, dim_pick);
         //({slen}, slen}
-
+//        cg.forward(S_arc);
         Expression err_arc = pickneglogsoftmax(S_arc, seq_head);
-
         Expression sum_err_arc = sum_batches(err_arc);
+
+/*
+        R_LabelMLP_head = rectify(affine_transform({LabelMLP_head_bias, LabelMLP_head, concatenate(bilstm_outputs, 1)}));
+        //R_LabelMLP_head: LabelMLP_SIZE * slen
+
+        R_LabelMLP_dep = rectify(affine_transform({LabelMLP_dep_bias, LabelMLP_dep, concatenate(bilstm_outputs, 1)}));
+        //R_LabelMLP_dep: LabelMLP_SIZE * slen
+
+        S_label = bilinear(cg, R_LabelMLP_dep, U_label, R_LabelMLP_head, EMBD_SIZE, slen, arcs_size, false, false);
+*/
+
+
+
         return sum_err_arc;
 
     }

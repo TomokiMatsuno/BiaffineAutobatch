@@ -46,22 +46,24 @@ int main(int argc, char** argv) {
             double loss = 0;
             vector<Expression> errs(batches[i].size());
 
-
             for (unsigned j = 0; j < batches[i].size(); j++) {
-                //cout << i << " " << j << endl;
+                cout << i << " " << j << endl;
                 vector<unsigned> seq_word, seq_pos, seq_head, seq_rel;
                 for (unsigned k = 0; k < batches[i][j].size(); k++) {
                     seq_word.push_back(batches[i][j][k][0]);
                     seq_pos.push_back(batches[i][j][k][1]);
                     seq_head.push_back(batches[i][j][k][2]);
                     seq_rel.push_back(batches[i][j][k][3]);
+//                    cout << vocab.get_dicts()[2].i2x[seq_head[seq_head.size() - 1]] << " ";
+//                    cout << vocab.get_dicts()[0].i2x[seq_word[seq_word.size() - 1]] << " ";
                 }
+//                cout << endl;
                 parser.l2rbuilder.start_new_sequence();
                 parser.r2lbuilder.start_new_sequence();
                 errs[j] = parser.BuildParser(cg, seq_word, seq_pos, seq_head, seq_rel);
             }
 
-            Expression pred_arc = concatenate(errs);
+//            Expression pred_arc = concatenate(errs);
             Expression sum_errs = sum(errs);
             loss += as_scalar(cg.forward(sum_errs));
             cg.backward(sum_errs);

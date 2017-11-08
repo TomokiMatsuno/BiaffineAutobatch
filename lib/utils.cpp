@@ -37,15 +37,18 @@ Expression bilinear(ComputationGraph& cg, Expression& x, Expression& W, Expressi
     }
     nx += bias_x;
     ny += bias_y;
+//    cg.forward(x);
     Expression lin = W * x;
     if(num_outputs > 1){
         lin = reshape(lin, {ny, num_outputs * seq_len});
     }
-    //cg.forward(lin);
+//    cg.forward(lin);
     Expression blin = transpose(y) * lin;
     if(num_outputs > 1){
         blin = reshape(blin, {seq_len, num_outputs, seq_len});
     }
-    //cg.forward(blin);
+//    cg.forward(blin);
     return blin;
 }
+
+

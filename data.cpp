@@ -53,7 +53,10 @@ public:
         if (has_entry(ent)) {
             return;
         } else {
-            this->x2i[ent] = this->x2i.size() - 1;
+            //Todo: unordered map performs differently on mac than the performance on linux. need to use another structure.
+            //when putting the first entry into a empty unordered_map, like x2i[ent] = x2i.size(), the value x2i[ent] has is 0 in mac and 1 in linux
+            //isUbuntu() is for resolving the difference.
+            this->x2i[ent] = this->x2i.size() - isUbuntu();
             this->i2x[this->x2i[ent]] = ent;
             return;
         }

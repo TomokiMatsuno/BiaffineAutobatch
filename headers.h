@@ -31,10 +31,10 @@ using namespace std;
 using namespace dynet;
 
 
-#include "../../BiAffine/read-file/read_ud_data.h"
-#include "../../BiAffine/read-file/read_ud_data.cpp"
+//#include "../BiAffine/read-file/read_ud_data.h"
+//#include "../BiAffine/read-file/read_ud_data.cpp"
 
-
+#include "file-paths.h"
 #include "config.h"
 #include "parameters.h"
 #include "network.h"

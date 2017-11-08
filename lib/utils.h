@@ -36,6 +36,12 @@ vector<vector<vector<unsigned>>> padding(vector<vector<vector<unsigned>>>& vec, 
     return vec;
 }
 
-
+bool isUbuntu(){
+    unordered_map<unsigned, unsigned> check;
+    check[0] = check.size();
+    //if(check.size() != check[0]) is_ubuntu = true;
+    is_ubuntu = (check[0] != 0);
+    return is_ubuntu;
+}
 #endif //BIAFFINE_2ND_UTILS_H
 
